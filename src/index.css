@@ -1,0 +1,99 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+:root {
+  --font-body: 'Cairo', system-ui, sans-serif;
+  --ease-brand: cubic-bezier(0.23, 1, 0.32, 1);
+}
+html[lang='en'] {
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: #f7fafa;
+  color: #0f1a1c;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+html[lang='ar'] body { line-height: 1.8; }
+html[lang='en'] body { line-height: 1.6; }
+/* Arabic script must never be letter-spaced */
+html[lang='ar'] * { letter-spacing: 0 !important; }
+section[id] { scroll-margin-top: 84px; }
+/* Subtle Islamic 8-point star pattern */
+.bg-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%2314949A' stroke-opacity='0.09' stroke-width='1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='7'/%3E%3Cpath d='M0 0L18 18M72 0L54 18M0 72L18 54M72 72L54 54'/%3E%3C/g%3E%3C/svg%3E");
+}
+.bg-pattern-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23F2D57E' stroke-opacity='0.08' stroke-width='1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='7'/%3E%3Cpath d='M0 0L18 18M72 0L54 18M0 72L18 54M72 72L54 54'/%3E%3C/g%3E%3C/svg%3E");
+}
+/* Editable placeholder marker for [bracketed] content */
+.ph {
+  display: inline;
+  color: inherit;
+  background: rgba(242, 213, 126, 0.32);
+  border: 1px dashed #d9a62e;
+  border-radius: 6px;
+  padding: 0 0.35em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* Gold shimmer sweep on CTAs */
+.btn-shimmer { overflow: hidden; isolation: isolate; }
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
+  transform: translateX(-130%);
+  animation: shimmer 4.5s linear infinite;
+  pointer-events: none;
+}
+[dir='rtl'] .btn-shimmer::after { animation-name: shimmer-rtl; }
+@keyframes shimmer { 0% { transform: translateX(-130%); } 22%, 100% { transform: translateX(130%); } }
+@keyframes shimmer-rtl { 0% { transform: translateX(130%); } 22%, 100% { transform: translateX(-130%); } }
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+.pulse-ring { animation: pulse-ring 2.2s cubic-bezier(0.23, 1, 0.32, 1) infinite; }
+@keyframes img-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+.img-skeleton { animation: img-pulse 1.6s ease-in-out infinite; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Testimonials marquee: the track holds the list twice, so shifting by half loops seamlessly. */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes marquee-rtl { from { transform: translateX(0); } to { transform: translateX(50%); } }
+.marquee-track { animation: marquee var(--marquee-duration, 60s) linear infinite; }
+[dir='rtl'] .marquee-track { animation-name: marquee-rtl; }
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track { animation-play-state: paused; }
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}

@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { extraServices } from '../../data/features';
 import { fadeUp, stagger, viewportOnce } from '../../utils/motion';
@@ -12,7 +11,7 @@ export function ExtraServices() {
       <div aria-hidden="true" className="bg-pattern-dark absolute inset-0" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionTitle id="extra-title" title={t.extra.title} tone="dark" />
-        <motion.ul
+        <m.ul
           variants={stagger(0.04)}
           initial="hidden"
           whileInView="show"
@@ -22,15 +21,15 @@ export function ExtraServices() {
           {extraServices.map((s) => {
             const Icon = s.icon;
             return (
-              <motion.li key={s.id} variants={fadeUp} className="flex items-start gap-4 bg-primary-dark p-6 lg:flex-col lg:p-8">
+              <m.li key={s.id} variants={fadeUp} className="flex items-start gap-4 bg-primary-dark p-6 lg:flex-col lg:p-8">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gold/15 text-gold-light ring-1 ring-gold/30">
                   <Icon className="h-6 w-6" aria-hidden="true" />
                 </span>
                 <p className="text-[15px] font-semibold leading-relaxed text-white/90">{pick(s.text)}</p>
-              </motion.li>);
+              </m.li>);
 
           })}
-        </motion.ul>
+        </m.ul>
       </div>
     </section>);
 

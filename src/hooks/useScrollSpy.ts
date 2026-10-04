@@ -5,11 +5,6 @@ export function useScrollSpy(ids: string[]): string {
   const [active, setActive] = useState(ids[0] ?? '');
 
   useEffect(() => {
-    const elements = ids.
-    map((id) => document.getElementById(id)).
-    filter((el): el is HTMLElement => Boolean(el));
-    if (!elements.length) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -18,8 +13,27 @@ export function useScrollSpy(ids: string[]): string {
       },
       { rootMargin: '-35% 0px -60% 0px', threshold: 0 }
     );
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+
+    // Sections below the hero mount a moment after first paint, so keep looking until all are found.
+    const pending = new Set(ids);
+    const attach = () => {
+      pending.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          observer.observe(el);
+          pending.delete(id);
+        }
+      });
+      if (!pending.size) mo.disconnect();
+    };
+    const mo = new MutationObserver(attach);
+    mo.observe(document.body, { childList: true, subtree: true });
+    attach();
+
+    return () => {
+      mo.disconnect();
+      observer.disconnect();
+    };
   }, [ids]);
 
   return active;

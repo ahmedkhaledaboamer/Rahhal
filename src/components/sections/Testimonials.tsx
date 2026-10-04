@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { MessageSquarePlusIcon, QuoteIcon, StarIcon, UserIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { contact } from '../../data/contact';
+import { usePauseOffscreen } from '../../hooks/usePauseOffscreen';
 import { testimonials, type Testimonial } from '../../data/testimonials';
 import { whatsappLink } from '../../utils/whatsapp';
 import { Button } from '../ui/Button';
@@ -10,6 +11,8 @@ import { SectionTitle } from '../ui/SectionTitle';
 
 export function Testimonials() {
   const { t, lang } = useLanguage();
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  usePauseOffscreen(marqueeRef);
 
   const shareMessage = lang === 'ar' ? 'مرحبًا رحال، أريد مشاركة رأيي في رحلتي معكم' : 'Hello Rahhal, I would like to share feedback about my trip with you.';
 
@@ -22,6 +25,7 @@ export function Testimonials() {
 
       {/* Single-row marquee: auto-scrolls, pauses on hover/focus, becomes a manual scroller with reduced motion. */}
       <div
+        ref={marqueeRef}
         role="region"
         aria-label={t.testimonials.carouselLabel}
         className="marquee marquee-mask relative mt-12 overflow-hidden motion-reduce:overflow-x-auto">
@@ -83,7 +87,7 @@ function TestimonialCard({ item }: {item: Testimonial;}) {
       <div className="flex items-start justify-between gap-3">
         <QuoteIcon className="h-9 w-9 text-gold rtl:-scale-x-100" aria-hidden="true" />
         {isPlaceholder &&
-        <span className="rounded-full bg-gold/15 px-3 py-1 text-[11px] font-bold text-gold-dark">{t.testimonials.placeholderBadge}</span>
+        <span className="rounded-full bg-gold/15 px-3 py-1 text-[11px] font-bold text-[#7A5A0E]">{t.testimonials.placeholderBadge}</span>
         }
       </div>
 

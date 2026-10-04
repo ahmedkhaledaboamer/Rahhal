@@ -1,5 +1,5 @@
 import React, { useId, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { CalendarIcon, ChevronDownIcon, MapPinIcon, SearchIcon, ShapesIcon } from 'lucide-react';
 import { useBooking } from '../../../contexts/BookingContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
@@ -52,7 +52,7 @@ export function QuickSearch() {
   const inputCls = 'w-full bg-transparent text-[15px] font-semibold text-ink placeholder:text-ink/40 focus:outline-none';
 
   return (
-    <motion.form
+    <m.form
       onSubmit={onSubmit}
       aria-label={t.search.label}
       initial={{ opacity: 0, y: 24 }}
@@ -125,9 +125,9 @@ export function QuickSearch() {
         </div>
       </div>
 
-      <Button type="submit" variant="gold" size="lg" fullWidth className="h-full min-h-[56px] rounded-2xl" icon={<SearchIcon className="h-5 w-5" aria-hidden="true" />}>
+      <Button type="submit" variant="gold" size="lg" fullWidth className="!h-full min-h-[56px] !rounded-2xl" icon={<SearchIcon className="h-5 w-5" aria-hidden="true" />}>
         {t.search.submit}
       </Button>
-    </motion.form>);
+    </m.form>);
 
 }

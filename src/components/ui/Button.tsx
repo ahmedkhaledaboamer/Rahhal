@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
-import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
-import { twMerge } from 'tailwind-merge';
+import { m, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 
 type Variant = 'gold' | 'primary' | 'outline' | 'glass' | 'whatsapp' | 'ghost' | 'light';
 type Size = 'sm' | 'md' | 'lg';
@@ -68,7 +67,8 @@ export function Button(props: ButtonProps) {
     my.set(0);
   };
 
-  const classes = twMerge(base, sizes[size], variants[variant], fullWidth && 'w-full', className);
+  // Callers override base/size utilities with `!` (e.g. `!rounded-2xl`), so a plain join is enough.
+  const classes = [base, sizes[size], variants[variant], fullWidth && 'w-full', className].filter(Boolean).join(' ');
   const content =
   <>
       {icon}
@@ -101,15 +101,12 @@ export function Button(props: ButtonProps) {
 
   }
 
+  const wrapClass = fullWidth ? 'flex w-full' : 'inline-flex';
+  if (!magnetic) return <span className={wrapClass}>{element}</span>;
+
   return (
-    <motion.span
-      ref={ref}
-      style={magnetic ? { x, y } : undefined}
-      onPointerMove={onMove}
-      onPointerLeave={onLeave}
-      className={fullWidth ? 'flex w-full' : 'inline-flex'}>
-      
+    <m.span ref={ref} style={{ x, y }} onPointerMove={onMove} onPointerLeave={onLeave} className={wrapClass}>
       {element}
-    </motion.span>);
+    </m.span>);
 
 }

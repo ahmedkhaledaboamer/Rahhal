@@ -1,8 +1,10 @@
-import React, { useRef } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
+import { useScrollFrame } from '../../hooks/useScrollFrame';
+import { responsiveSrcSet } from '../../utils/srcset';
 import { inquiryWhatsappLink } from '../../utils/whatsapp';
 import { WhatsAppIcon } from '../icons/BrandIcons';
 import { Button } from '../ui/Button';
@@ -13,19 +15,30 @@ export function CtaBanner() {
   const { openInquiry } = useBooking();
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], ['-12%', '12%']);
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  // Parallax: background moves -12%→12% while the section crosses the viewport.
+  useScrollFrame(() => {
+    if (reduce || !ref.current || !bgRef.current) return;
+    const r = ref.current.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    bgRef.current.style.transform = `translate3d(0, ${-12 + p * 24}%, 0)`;
+  }, ref);
 
   return (
     <section ref={ref} aria-labelledby="cta-title" className="relative isolate overflow-hidden py-28 lg:py-40">
-      <motion.div style={{ y: reduce ? 0 : y }} className="absolute -inset-y-[15%] inset-x-0 -z-10">
+      <div ref={bgRef} className="absolute -inset-y-[15%] inset-x-0 -z-10 will-change-transform">
         <img
           src={images.ctaDesert}
+          srcSet={responsiveSrcSet(images.ctaDesert)}
+          sizes="100vw"
           alt={lang === 'ar' ? 'صحراء سيناء وقت الغروب' : 'The Sinai desert at sunset'}
           loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover" />
         
-      </motion.div>
+      </div>
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-primary-deep/75" />
       <div aria-hidden="true" className="bg-pattern-dark absolute inset-0 -z-10" />
       <Reveal className="mx-auto max-w-3xl px-4 text-center sm:px-6">

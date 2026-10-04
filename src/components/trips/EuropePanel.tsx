@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
@@ -24,9 +23,9 @@ export function EuropePanel() {
         <div>
           <p className="text-lg text-ink/75">{e.intro}</p>
           <h3 className="mt-8 text-xl font-extrabold text-ink">{e.destinationsTitle}</h3>
-          <motion.ul variants={stagger(0.03)} initial="hidden" whileInView="show" viewport={viewportOnce} className="mt-5 flex flex-wrap gap-2.5">
+          <m.ul variants={stagger(0.03)} initial="hidden" whileInView="show" viewport={viewportOnce} className="mt-5 flex flex-wrap gap-2.5">
             {europeDestinations.map((c) =>
-            <motion.li
+            <m.li
               key={c.id}
               variants={fadeUp}
               className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-ink shadow-soft ring-1 ring-ink/5">
@@ -35,9 +34,9 @@ export function EuropePanel() {
                   {c.flag}
                 </span>
                 {pick(c.name)}
-              </motion.li>
+              </m.li>
             )}
-          </motion.ul>
+          </m.ul>
           <p className="mt-5 text-sm font-semibold text-ink/60">{e.onRequestLabel}</p>
           <ul className="mt-2.5 flex flex-wrap gap-2.5">
             {europeOnRequest.map((c) =>
@@ -71,7 +70,7 @@ export function EuropePanel() {
 
       <div>
         <h3 className="text-2xl font-extrabold text-ink">{e.programsTitle}</h3>
-        <motion.ul
+        <m.ul
           variants={stagger(0.06)}
           initial="hidden"
           whileInView="show"
@@ -81,7 +80,7 @@ export function EuropePanel() {
           {europePrograms.map((p) =>
           <ProgramCard key={p.id} program={p} />
           )}
-        </motion.ul>
+        </m.ul>
       </div>
 
       <div className="space-y-6">

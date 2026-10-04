@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, type TouchEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion, type PanInfo } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useBodyLock } from '../../hooks/useBodyLock';
@@ -40,9 +40,17 @@ export function Lightbox({ images, index, onClose, onIndexChange }: LightboxProp
     return () => document.removeEventListener('keydown', onKey);
   }, [open, go, onClose, isRTL]);
 
-  const onDragEnd = (_: unknown, info: PanInfo) => {
-    if (Math.abs(info.offset.x) < 60) return;
-    const towardsStart = info.offset.x * sign > 0; // dragged toward reading start → previous
+  // Plain touch swipe (framer's `drag` needs its heavier feature bundle).
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = (e: TouchEvent) => {
+    touchX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: TouchEvent) => {
+    if (touchX.current === null || images.length < 2) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) < 60) return;
+    const towardsStart = dx * sign > 0; // swiped toward reading start → previous
     go(towardsStart ? -1 : 1);
   };
 
@@ -51,7 +59,7 @@ export function Lightbox({ images, index, onClose, onIndexChange }: LightboxProp
   return createPortal(
     <AnimatePresence>
       {open && current &&
-      <motion.div
+      <m.div
         dir={dir}
         role="dialog"
         aria-modal="true"
@@ -79,20 +87,18 @@ export function Lightbox({ images, index, onClose, onIndexChange }: LightboxProp
           </div>
 
           <AnimatePresence mode="wait" initial={false}>
-            <motion.img
+            <m.img
             key={current.src}
             src={current.src}
             alt={current.alt}
-            drag={images.length > 1 ? 'x' : false}
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.4}
-            onDragEnd={onDragEnd}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
             onClick={(e) => e.stopPropagation()}
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.2, ease: EASE_OUT }}
-            className="max-h-[80svh] max-w-full cursor-grab rounded-2xl object-contain shadow-2xl active:cursor-grabbing" />
+            className="max-h-[80svh] max-w-full touch-pan-y rounded-2xl object-contain shadow-2xl" />
           
           </AnimatePresence>
 
@@ -104,7 +110,7 @@ export function Lightbox({ images, index, onClose, onIndexChange }: LightboxProp
               <NavButton label={t.a11y.next} onClick={() => go(1)} position="end" />
             </>
         }
-        </motion.div>
+        </m.div>
       }
     </AnimatePresence>,
     document.body

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { inquiryWhatsappLink } from '../../utils/whatsapp';
 import { WhatsAppIcon } from '../icons/BrandIcons';

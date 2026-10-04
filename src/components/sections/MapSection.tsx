@@ -80,14 +80,14 @@ export function MapSection() {
 
 function Row({ icon, label, children }: {icon: React.ReactNode;label: string;children: React.ReactNode;}) {
   return (
-    <div className="flex gap-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-gold-light" aria-hidden="true">
-        {icon}
-      </span>
-      <div>
-        <dt className="text-xs font-bold text-white/60">{label}</dt>
-        <dd className="mt-0.5 text-[15px] text-white/90">{children}</dd>
-      </div>
+    <div className="relative min-h-10 ps-14">
+      <dt className="text-xs font-bold text-white/60">
+        <span className="absolute start-0 top-0 flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-gold-light" aria-hidden="true">
+          {icon}
+        </span>
+        {label}
+      </dt>
+      <dd className="mt-0.5 text-[15px] text-white/90">{children}</dd>
     </div>);
 
 }

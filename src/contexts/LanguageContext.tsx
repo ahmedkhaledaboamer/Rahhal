@@ -1,8 +1,7 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, startTransition, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { ar, type Dictionary } from '../locales/ar';
 import { en } from '../locales/en';
 import type { Dir, Lang, Localized } from '../types/i18n';
-import { prefersReducedMotion } from '../utils/scroll';
 
 type LanguageContextValue = {
   lang: Lang;
@@ -13,7 +12,6 @@ type LanguageContextValue = {
   t: Dictionary;
   pick: (value: Localized) => string;
   setLang: (next: Lang) => void;
-  switching: boolean;
 };
 
 const STORAGE_KEY = 'rahhal-lang';
@@ -25,21 +23,24 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: {children: React.ReactNode;}) {
   const [lang, setLangState] = useState<Lang>(getInitialLang);
-  const [switching, setSwitching] = useState(false);
   const t = dictionaries[lang];
   const dir: Dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-  useEffect(() => {
+  // Before paint, so the new language never shows for a frame in the old direction.
+  useLayoutEffect(() => {
     const html = document.documentElement;
     html.lang = lang;
     html.dir = dir;
+  }, [lang, dir]);
+
+  useEffect(() => {
     document.title = t.meta.title;
     setMeta('name', 'description', t.meta.description);
     setMeta('property', 'og:title', t.meta.title);
     setMeta('property', 'og:description', t.meta.description);
     setMeta('property', 'og:locale', t.meta.ogLocale);
     setMeta('property', 'og:type', 'website');
-    setMeta('property', 'og:image', "/logo5.png");
+    setMeta('property', 'og:image', "/logo-og.png");
     setMeta('name', 'twitter:card', 'summary_large_image');
     setAlternateLinks();
     try {
@@ -55,15 +56,18 @@ export function LanguageProvider({ children }: {children: React.ReactNode;}) {
   const setLang = useCallback(
     (next: Lang) => {
       if (next === lang) return;
-      if (prefersReducedMotion()) {
-        setLangState(next);
-        return;
+      // A transition keeps the current page on screen while the other language renders,
+      // then swaps in one frame — no blank page in between.
+      const commit = () => startTransition(() => setLangState(next));
+      // English uses Inter, which isn't loaded on an Arabic visit: fetch it first (max 500 ms) to avoid a font swap.
+      if (next === 'en' && document.fonts) {
+        Promise.race([
+        document.fonts.load('400 1em Inter'),
+        new Promise((resolve) => window.setTimeout(resolve, 500))]
+        ).finally(commit);
+      } else {
+        commit();
       }
-      setSwitching(true);
-      window.setTimeout(() => {
-        setLangState(next);
-        window.requestAnimationFrame(() => setSwitching(false));
-      }, 140);
     },
     [lang]
   );
@@ -76,10 +80,9 @@ export function LanguageProvider({ children }: {children: React.ReactNode;}) {
       sign: dir === 'rtl' ? -1 : 1,
       t,
       pick: (v: Localized) => v[lang],
-      setLang,
-      switching
+      setLang
     }),
-    [lang, dir, t, setLang, switching]
+    [lang, dir, t, setLang]
   );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

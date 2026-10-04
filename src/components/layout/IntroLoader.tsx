@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, m } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
 import { EASE_OUT } from '../../utils/motion';
@@ -34,7 +34,7 @@ export function IntroLoader() {
   return (
     <AnimatePresence>
       {visible &&
-      <motion.div
+      <m.div
         className="bg-pattern fixed inset-0 z-[100] flex items-center justify-center bg-cloud"
         initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -42,16 +42,16 @@ export function IntroLoader() {
         role="status"
         aria-label={t.a11y.loading}>
         
-          <motion.div
+          <m.div
           initial={{ opacity: 0, scale: 0.96, y: 8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 1.04 }}
           transition={{ duration: 0.3, ease: EASE_OUT }}
           className="flex flex-col items-center gap-5">
           
-            <img src={images.logo} alt={t.brand.logoAlt} className="h-32 w-auto drop-shadow-xl md:h-40" />
+            <img src={images.logo} alt={t.brand.logoAlt} width={309} height={320} className="h-32 w-auto drop-shadow-xl md:h-40" />
             <div className="h-1 w-28 overflow-hidden rounded-full bg-primary/15">
-              <motion.div
+              <m.div
               className="h-full bg-gold"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
@@ -59,8 +59,8 @@ export function IntroLoader() {
               style={{ transformOrigin: 'center' }} />
             
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       }
     </AnimatePresence>);
 

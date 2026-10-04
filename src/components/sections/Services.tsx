@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ArrowRightIcon } from 'lucide-react';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -17,7 +16,7 @@ export function Services() {
     <section id="services" aria-labelledby="services-title" className="bg-white py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionTitle id="services-title" title={t.services.title} />
-        <motion.ul
+        <m.ul
           variants={stagger(0.08)}
           initial="hidden"
           whileInView="show"
@@ -27,7 +26,7 @@ export function Services() {
           {services.map((s) => {
             const Icon = s.icon;
             return (
-              <motion.li key={s.id} variants={fadeUp}>
+              <m.li key={s.id} variants={fadeUp}>
                 <a
                   href="#trips"
                   onClick={(e) => {
@@ -53,10 +52,10 @@ export function Services() {
                     </span>
                   </span>
                 </a>
-              </motion.li>);
+              </m.li>);
 
           })}
-        </motion.ul>
+        </m.ul>
       </div>
     </section>);
 

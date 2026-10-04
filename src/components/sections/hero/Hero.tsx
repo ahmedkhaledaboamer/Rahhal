@@ -1,12 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform, type PanInfo } from 'framer-motion';
+import { useCallback, useEffect, useRef, useState, type TouchEvent } from 'react';
+import { AnimatePresence, m, useReducedMotion } from 'framer-motion';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useBooking } from '../../../contexts/BookingContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { heroSlides, type HeroAction } from '../../../data/heroSlides';
 import { images } from '../../../data/images';
+import { usePauseOffscreen } from '../../../hooks/usePauseOffscreen';
+import { useScrollFrame } from '../../../hooks/useScrollFrame';
 import { EASE_OUT } from '../../../utils/motion';
 import { scrollToSection } from '../../../utils/scroll';
+import { responsiveSrcSet } from '../../../utils/srcset';
 import { inquiryWhatsappLink } from '../../../utils/whatsapp';
 import { WhatsAppIcon } from '../../icons/BrandIcons';
 import { Button } from '../../ui/Button';
@@ -22,8 +25,16 @@ export function Hero() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
+  const bgRef = useRef<HTMLDivElement>(null);
+  usePauseOffscreen(ref);
+
+  // Parallax: background drifts down 0→18% as the hero scrolls out of view.
+  useScrollFrame(() => {
+    if (reduce || !ref.current || !bgRef.current) return;
+    const r = ref.current.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, -r.top / r.height));
+    bgRef.current.style.transform = `translate3d(0, ${p * 18}%, 0)`;
+  }, ref);
 
   const go = useCallback((delta: number) => setIndex((i) => (i + delta + heroSlides.length) % heroSlides.length), []);
 
@@ -43,9 +54,17 @@ export function Hero() {
     if (action === 'visas') scrollToSection('visas');
   };
 
-  const onDragEnd = (_: unknown, info: PanInfo) => {
-    if (Math.abs(info.offset.x) < 70) return;
-    go(info.offset.x * sign > 0 ? -1 : 1);
+  // Plain touch swipe: framer's `drag` would switch on its layout-measuring engine for the whole page.
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = (e: TouchEvent) => {
+    touchX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: TouchEvent) => {
+    if (touchX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) < 70) return;
+    go(dx * sign > 0 ? -1 : 1);
   };
 
   return (
@@ -63,9 +82,9 @@ export function Hero() {
       <h1 className="sr-only">{t.hero.srTitle}</h1>
 
       {/* Background slides */}
-      <motion.div style={{ y: reduce ? 0 : bgY }} className="absolute inset-0 -z-10">
+      <div ref={bgRef} className="absolute inset-0 -z-10 will-change-transform">
         <AnimatePresence initial={false}>
-          <motion.div
+          <m.div
             key={slide.id}
             className="absolute inset-0"
             initial={{ opacity: 0 }}
@@ -73,36 +92,37 @@ export function Hero() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: EASE_OUT }}>
             
-            <motion.img
+            {/* Ken Burns zoom is a CSS animation (.hero-kenburns) so it stays on the compositor. */}
+            <img
               src={images[slide.image]}
+              srcSet={responsiveSrcSet(images[slide.image])}
+              sizes="100vw"
               alt={pick(slide.alt)}
-              className="h-full w-full object-cover"
-              initial={{ scale: 1 }}
-              animate={{ scale: reduce ? 1 : 1.12 }}
-              transition={{ duration: SLIDE_MS / 1000 + 1, ease: 'linear' }}
+              {...{ fetchpriority: index === 0 ? 'high' : 'auto' }}
+              className="hero-kenburns h-full w-full object-cover"
+              style={{ animationDuration: `${SLIDE_MS / 1000 + 1}s` }}
               loading={index === 0 ? 'eager' : 'lazy'} />
             
-          </motion.div>
+          </m.div>
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/45 to-ink/30" />
         <div className="absolute inset-0 from-ink/60 to-transparent ltr:bg-gradient-to-r rtl:bg-gradient-to-l" />
-      </motion.div>
+      </div>
 
       <HeroDecor />
 
-      <motion.div
-        drag="x"
-        dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.12}
-        onDragEnd={onDragEnd}
+      <div
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
         className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 pb-10 pt-36 sm:px-6 lg:px-8 lg:pt-40">
         
         <div className="max-w-3xl" aria-live={paused ? 'polite' : 'off'}>
-          <AnimatePresence mode="wait">
-            <motion.div key={`${slide.id}-${lang}`} exit={{ opacity: 0, y: -10, transition: { duration: 0.18 } }}>
+          {/* initial={false}: first slide's text is the LCP element, so it paints immediately instead of fading in. */}
+          <AnimatePresence mode="wait" initial={false}>
+            <m.div key={`${slide.id}-${lang}`} exit={{ opacity: 0, y: -10, transition: { duration: 0.18 } }}>
               <h2 className="text-balance text-4xl font-extrabold leading-[1.3] text-white sm:text-5xl lg:text-[4rem] ltr:leading-[1.08] ltr:tracking-tight">
                 {words.map((w, i) =>
-                <motion.span
+                <m.span
                   key={`${w}-${i}`}
                   className="inline-block"
                   initial={{ opacity: 0, y: '0.45em' }}
@@ -111,18 +131,18 @@ export function Hero() {
                   
                     {w}
                     {i < words.length - 1 && '\u00A0'}
-                  </motion.span>
+                  </m.span>
                 )}
               </h2>
-              <motion.p
+              <m.p
                 className="mt-6 max-w-2xl text-lg text-white/85 md:text-xl"
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: EASE_OUT, delay: 0.2 + words.length * 0.06 }}>
                 
                 {pick(slide.text)}
-              </motion.p>
-              <motion.div
+              </m.p>
+              <m.div
                 className="mt-9 flex flex-wrap gap-3"
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -134,8 +154,8 @@ export function Hero() {
                 <Button variant="glass" size="lg" href={inquiryWhatsappLink(lang)} external icon={<WhatsAppIcon className="h-5 w-5" />}>
                   {t.hero.whatsappCta}
                 </Button>
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
           </AnimatePresence>
         </div>
 
@@ -154,13 +174,10 @@ export function Hero() {
               style={{ width: i === index ? 48 : 16 }}>
               
                 {i === index &&
-              <motion.span
+              <span
                 key={`${index}-${paused}`}
-                className="absolute inset-0 rounded-full bg-gold"
-                initial={{ scaleX: reduce || paused ? 1 : 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: reduce || paused ? 0 : SLIDE_MS / 1000, ease: 'linear' }}
-                style={{ transformOrigin: sign === 1 ? 'left' : 'right' }} />
+                className={`absolute inset-0 rounded-full bg-gold ${reduce || paused ? '' : 'hero-dot-progress'}`}
+                style={{ transformOrigin: sign === 1 ? 'left' : 'right', animationDuration: `${SLIDE_MS / 1000}s` }} />
 
               }
               </button>
@@ -173,7 +190,7 @@ export function Hero() {
             </bdi>
           </span>
         </div>
-      </motion.div>
+      </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24">
         <QuickSearch />

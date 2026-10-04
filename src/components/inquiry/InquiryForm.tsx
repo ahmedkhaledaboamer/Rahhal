@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ChevronDownIcon, LoaderCircleIcon, LockIcon, SendIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { serviceIds, useInquiryForm, type InquiryValues } from '../../hooks/useInquiryForm';
@@ -36,7 +36,7 @@ export function InquiryForm() {
         {status === 'success' ?
         <SuccessPanel key="success" waUrl={waUrl} onReset={reset} /> :
 
-        <motion.form
+        <m.form
           key="form"
           noValidate
           onSubmit={onSubmit}
@@ -142,7 +142,7 @@ export function InquiryForm() {
                 {t.inquiry.privacy}
               </p>
             </div>
-          </motion.form>
+          </m.form>
         }
       </AnimatePresence>
       <span className="sr-only" lang={lang} aria-live="polite">
@@ -196,7 +196,7 @@ function CountInput({ id, name, label, error, value, onBlur, onChange, ...aria }
 function SuccessPanel({ waUrl, onReset }: {waUrl: string;onReset: () => void;}) {
   const { t } = useLanguage();
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
@@ -205,7 +205,7 @@ function SuccessPanel({ waUrl, onReset }: {waUrl: string;onReset: () => void;}) 
       
       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary-light">
         <svg viewBox="0 0 52 52" className="h-12 w-12 text-primary-dark" aria-hidden="true">
-          <motion.circle
+          <m.circle
             cx="26"
             cy="26"
             r="23"
@@ -216,7 +216,7 @@ function SuccessPanel({ waUrl, onReset }: {waUrl: string;onReset: () => void;}) 
             animate={{ pathLength: 1 }}
             transition={{ duration: 0.3, ease: EASE_OUT }} />
           
-          <motion.path
+          <m.path
             d="M15 27l7 7 15-15"
             fill="none"
             stroke="#D9A62E"
@@ -240,6 +240,6 @@ function SuccessPanel({ waUrl, onReset }: {waUrl: string;onReset: () => void;}) 
           {t.inquiry.newInquiry}
         </Button>
       </div>
-    </motion.div>);
+    </m.div>);
 
 }

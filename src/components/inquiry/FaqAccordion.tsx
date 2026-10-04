@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
+import { AnimatePresence, m } from 'framer-motion';
 import { PlusIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { faqs } from '../../data/faqs';
@@ -37,7 +37,7 @@ export function FaqAccordion() {
             </h3>
             <AnimatePresence initial={false}>
               {isOpen &&
-              <motion.div
+              <m.div
                 id={`faq-panel-${f.id}`}
                 role="region"
                 aria-labelledby={`faq-btn-${f.id}`}
@@ -50,7 +50,7 @@ export function FaqAccordion() {
                   <p className="pb-5 pe-12 text-[15px] text-ink/70">
                     <PlaceholderText text={pick(f.a)} />
                   </p>
-                </motion.div>
+                </m.div>
               }
             </AnimatePresence>
           </li>);

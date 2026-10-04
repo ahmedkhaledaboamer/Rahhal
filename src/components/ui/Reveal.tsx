@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { EASE_OUT, viewportOnce } from '../../utils/motion';
 
 type RevealProps = {
@@ -13,7 +13,7 @@ type RevealProps = {
 
 export function Reveal({ children, className, delay = 0, y = 22, x = 0 }: RevealProps) {
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={{ opacity: 0, y, x }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
@@ -21,6 +21,6 @@ export function Reveal({ children, className, delay = 0, y = 22, x = 0 }: Reveal
       transition={{ duration: 0.3, ease: EASE_OUT, delay }}>
       
       {children}
-    </motion.div>);
+    </m.div>);
 
 }

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { responsiveSrcSet } from '../../utils/srcset';
 
 type SmartImageProps = {
   src: string;
@@ -9,9 +10,11 @@ type SmartImageProps = {
   imgClassName?: string;
   eager?: boolean;
   zoomOnHover?: boolean;
+  /** Rendered width hint for picking the right file from the srcSet. */
+  sizes?: string;
 };
 
-/** Lazy image with an aspect-ratio box and a blur-up reveal once loaded. */
+/** Lazy, responsive image in an aspect-ratio box that fades in once loaded (opacity only, so it stays on the GPU). */
 export function SmartImage({
   src,
   alt,
@@ -19,22 +22,26 @@ export function SmartImage({
   className = '',
   imgClassName = '',
   eager = false,
-  zoomOnHover = false
+  zoomOnHover = false,
+  sizes = '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'
 }: SmartImageProps) {
   const [loaded, setLoaded] = useState(false);
+  // `relative` would override a caller's `absolute` (it comes later in Tailwind's CSS) and collapse the box.
+  const position = /(^|\s)absolute(\s|$)/.test(className) ? '' : 'relative';
   return (
-    <div className={`relative overflow-hidden bg-primary-light ${aspect ?? ''} ${className}`}>
-      {!loaded && <div aria-hidden="true" className="img-skeleton absolute inset-0 bg-primary/10" />}
+    <div className={`${position} overflow-hidden bg-primary-light ${aspect ?? ''} ${className}`}>
       <img
         src={src}
+        srcSet={responsiveSrcSet(src)}
+        sizes={sizes}
         alt={alt}
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         onLoad={() => setLoaded(true)}
-        className={`absolute inset-0 h-full w-full object-cover transition-[filter,opacity,transform] duration-300 ease-brand ${
-        loaded ? 'opacity-100 blur-0' : 'scale-105 opacity-0 blur-lg'} ${
+        className={`absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-300 ease-brand ${
+        loaded ? 'opacity-100' : 'opacity-0'} ${
         zoomOnHover ? 'group-hover:scale-[1.05] motion-reduce:group-hover:scale-100' : ''} ${imgClassName}`} />
-      
+
     </div>);
 
 }

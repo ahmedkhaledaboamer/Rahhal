@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, m, useReducedMotion } from 'framer-motion';
 import { ArrowUpIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { EASE_OUT } from '../../utils/motion';
@@ -18,17 +18,24 @@ export function ScrollToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const update = () => {
+    // At most one read per frame, and a re-render only when the whole-number percentage changes.
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      setProgress(Math.min(100, Math.max(0, pct)));
+      setProgress(Math.round(Math.min(100, Math.max(0, pct))));
       setVisible(scrollTop > 300);
     };
-    update();
+    const update = () => {
+      if (!frame) frame = window.requestAnimationFrame(measure);
+    };
+    measure();
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
     return () => {
+      window.cancelAnimationFrame(frame);
       window.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
@@ -39,7 +46,7 @@ export function ScrollToTop() {
   return (
     <AnimatePresence>
       {visible &&
-      <motion.button
+      <m.button
         type="button"
         initial={{ opacity: 0, scale: 0.6, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -73,7 +80,7 @@ export function ScrollToTop() {
               </span>
             </div>
           </div>
-        </motion.button>
+        </m.button>
       }
     </AnimatePresence>);
 

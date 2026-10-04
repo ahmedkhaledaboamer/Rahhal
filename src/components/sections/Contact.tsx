@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { contact } from '../../data/contact';
@@ -71,7 +71,7 @@ export function Contact() {
     <section id="contact" aria-labelledby="contact-title" className="bg-white py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionTitle id="contact-title" title={c.title} />
-        <motion.ul
+        <m.ul
           variants={stagger(0.04)}
           initial="hidden"
           whileInView="show"
@@ -79,11 +79,11 @@ export function Contact() {
           className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           
           {items.map((item) =>
-          <motion.li key={item.id} variants={fadeUp} className={item.featured ? 'lg:col-span-2' : ''}>
+          <m.li key={item.id} variants={fadeUp} className={item.featured ? 'lg:col-span-2' : ''}>
               <ContactCard item={item} />
-            </motion.li>
+            </m.li>
           )}
-        </motion.ul>
+        </m.ul>
       </div>
     </section>);
 

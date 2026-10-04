@@ -1,5 +1,4 @@
-import React, { useId, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 export type TabItem<T extends string> = {id: T;label: string;icon?: React.ReactNode;};
@@ -16,7 +15,6 @@ type TabsProps<T extends string> = {
 /** Accessible tablist with an animated indicator and direction-aware arrow keys. */
 export function Tabs<T extends string>({ items, value, onChange, label, idPrefix, variant = 'primary' }: TabsProps<T>) {
   const { isRTL } = useLanguage();
-  const layoutId = useId();
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const onKeyDown = (e: React.KeyboardEvent, i: number) => {
@@ -63,13 +61,10 @@ export function Tabs<T extends string>({ items, value, onChange, label, idPrefix
             isPill ? 'rounded-full px-5 py-2 text-sm' : 'flex-1 rounded-xl px-4 py-3 text-sm sm:px-6 sm:text-base'} ${
             active ? 'text-white' : 'text-ink/65 hover:text-primary-dark'}`}>
             
-            {active &&
-            <motion.span
-              layoutId={layoutId}
-              className={`absolute inset-0 -z-0 ${isPill ? 'rounded-full bg-primary' : 'rounded-xl bg-primary-dark'}`}
-              transition={{ type: 'spring', stiffness: 480, damping: 38 }} />
-
-            }
+            <span
+              aria-hidden="true"
+              className={`absolute inset-0 -z-0 transition-[opacity,transform] duration-200 ease-brand ${isPill ? 'rounded-full bg-primary' : 'rounded-xl bg-primary-dark'} ${
+              active ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`} />
             <span className="relative z-10 flex items-center gap-2">
               {item.icon}
               {item.label}

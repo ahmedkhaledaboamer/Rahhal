@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { GlobeIcon, MoonIcon, TreePalmIcon } from 'lucide-react';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -40,7 +40,7 @@ export function Trips() {
 
         <div className="mt-12">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div
+            <m.div
               key={tripTab}
               role="tabpanel"
               id={`trips-panel-${tripTab}`}
@@ -55,7 +55,7 @@ export function Trips() {
               {tripTab === 'domestic' && <DomesticTrips />}
               {tripTab === 'international' && <InternationalTrips />}
               {tripTab === 'umrah' && <UmrahHajj />}
-            </motion.div>
+            </m.div>
           </AnimatePresence>
         </div>
       </div>

@@ -1,12 +1,10 @@
-import React from 'react';
-import { motion } from 'framer-motion';
 import { FileTextIcon, LandmarkIcon } from 'lucide-react';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
 import { umrahPackages } from '../../data/umrahPackages';
-import { fadeUp, stagger, viewportOnce } from '../../utils/motion';
 import { Button } from '../ui/Button';
+import { Carousel } from '../ui/Carousel';
 import { CheckList } from '../ui/CheckList';
 import { PlaceholderText } from '../ui/PlaceholderText';
 import { Reveal } from '../ui/Reveal';
@@ -28,55 +26,47 @@ export function UmrahHajj() {
             <PlaceholderText text={u.pricesNote} />
           </p>
         </div>
-        <motion.ul
-          variants={stagger(0.06)}
-          initial="hidden"
-          whileInView="show"
-          viewport={viewportOnce}
-          className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          
-          {umrahPackages.map((p) => {
-            const Icon = p.icon;
-            return (
-              <motion.li
-                key={p.id}
-                variants={fadeUp}
-                className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-ink/5">
-                
-                <div className="relative">
-                  <SmartImage src={images[p.image]} alt="" aspect="aspect-[4/3]" />
-                  <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
-                  <span className="absolute -bottom-6 start-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gold text-ink shadow-gold">
-                    <Icon className="h-6 w-6" aria-hidden="true" />
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col p-5 pt-9">
-                  <h4 className="text-lg font-extrabold text-ink">{pick(p.name)}</h4>
-                  <dl className="mt-3 space-y-3 text-sm">
-                    <div>
-                      <dt className="font-bold text-primary-dark">{u.suitedFor}</dt>
-                      <dd className="text-ink/70">{pick(p.suitedFor)}</dd>
-                    </div>
-                    <div>
-                      <dt className="font-bold text-primary-dark">{u.features}</dt>
-                      <dd className="text-ink/70">{pick(p.features)}</dd>
-                    </div>
-                  </dl>
-                  <div className="mt-auto pt-5">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      fullWidth
-                      onClick={() => openInquiry({ service: 'umrah', destination: `${t.trips.tabs.umrah} – ${pick(p.name)}` })}>
-                      
-                      {u.quote}
-                    </Button>
+        <Reveal className="mt-6">
+          <Carousel
+            label={u.packagesTitle}
+            items={umrahPackages.map((p) => {
+              const Icon = p.icon;
+              return (
+                <article className="flex w-full flex-col overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-ink/5">
+                  <div className="relative">
+                    <SmartImage src={images[p.image]} alt="" aspect="aspect-[4/3]" />
+                    <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+                    <span className="absolute -bottom-6 start-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gold text-ink shadow-gold">
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </span>
                   </div>
-                </div>
-              </motion.li>);
+                  <div className="flex flex-1 flex-col p-5 pt-9">
+                    <h4 className="text-lg font-extrabold text-ink">{pick(p.name)}</h4>
+                    <dl className="mt-3 space-y-3 text-sm">
+                      <div>
+                        <dt className="font-bold text-primary-dark">{u.suitedFor}</dt>
+                        <dd className="text-ink/70">{pick(p.suitedFor)}</dd>
+                      </div>
+                      <div>
+                        <dt className="font-bold text-primary-dark">{u.features}</dt>
+                        <dd className="text-ink/70">{pick(p.features)}</dd>
+                      </div>
+                    </dl>
+                    <div className="mt-auto pt-5">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        fullWidth
+                        onClick={() => openInquiry({ service: 'umrah', destination: `${t.trips.tabs.umrah} – ${pick(p.name)}` })}>
 
-          })}
-        </motion.ul>
+                        {u.quote}
+                      </Button>
+                    </div>
+                  </div>
+                </article>);
+
+            })} />
+        </Reveal>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">

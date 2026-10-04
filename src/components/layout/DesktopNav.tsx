@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, m } from 'framer-motion';
 import { ChevronDownIcon } from 'lucide-react';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -36,13 +36,14 @@ export function DesktopNav({ active, onDark = false }: {active: string;onDark?: 
           isActive ? 'text-white' : 'text-white/80 [text-shadow:0_1px_8px_rgba(0,0,0,0.35)] hover:text-white' :
           isActive ? 'text-primary-dark' : 'text-ink/70 hover:text-primary-dark'}`;
 
-          const indicator = isActive &&
-          <motion.span
-            layoutId="nav-active"
-            className={`absolute inset-0 -z-10 rounded-full ${
-            onDark ? 'bg-white/15 ring-1 ring-white/25 backdrop-blur-sm' : 'bg-primary-light ring-1 ring-primary/10'}`
-            }
-            transition={{ type: 'spring', stiffness: 500, damping: 40 }} />;
+          // CSS-only active pill: a framer `layoutId` here re-measured the whole page on every scroll-spy change.
+          const indicator =
+          <span
+            aria-hidden="true"
+            className={`absolute inset-0 -z-10 rounded-full transition-[opacity,transform] duration-300 ease-brand ${
+            onDark ? 'bg-white/15 ring-1 ring-white/25' : 'bg-primary-light ring-1 ring-primary/10'} ${
+            isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`
+            } />;
 
 
 
@@ -71,7 +72,7 @@ export function DesktopNav({ active, onDark = false }: {active: string;onDark?: 
                 </button>
                 <AnimatePresence>
                   {menuOpen &&
-                  <motion.ul
+                  <m.ul
                     initial={{ opacity: 0, y: 6, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 4, scale: 0.98 }}
@@ -93,7 +94,7 @@ export function DesktopNav({ active, onDark = false }: {active: string;onDark?: 
                           </a>
                         </li>
                     )}
-                    </motion.ul>
+                    </m.ul>
                   }
                 </AnimatePresence>
               </li>);

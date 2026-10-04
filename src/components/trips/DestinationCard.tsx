@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ArrowRightIcon, CalendarDaysIcon, ClockIcon, ImagesIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { Destination } from '../../data/destinations';
@@ -22,7 +21,7 @@ export function DestinationCard({ destination: d, onOpen, onBook }: DestinationC
   const cover = d.images[0];
 
   return (
-    <motion.article
+    <m.article
       variants={fadeUp}
       className="group flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-ink/5 transition-[transform,box-shadow] duration-300 ease-brand hover:-translate-y-1 hover:shadow-lift motion-reduce:hover:translate-y-0">
       
@@ -32,7 +31,6 @@ export function DestinationCard({ destination: d, onOpen, onBook }: DestinationC
           e.preventDefault();
           onOpen();
         }}
-        aria-label={`${t.trips.common.details}: ${pick(d.name)}`}
         className="relative block focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-gold">
         
         <SmartImage src={images[cover.key]} alt={pick(cover.alt)} aspect="aspect-[4/3]" zoomOnHover />
@@ -44,6 +42,7 @@ export function DestinationCard({ destination: d, onOpen, onBook }: DestinationC
         <span className="absolute inset-x-5 bottom-4">
           <span className="block text-2xl font-extrabold text-white">{pick(d.name)}</span>
           <span className="block text-sm font-semibold text-gold-light">{pick(d.tagline)}</span>
+          <span className="sr-only"> – {t.trips.common.details}</span>
         </span>
       </a>
 
@@ -98,6 +97,6 @@ export function DestinationCard({ destination: d, onOpen, onBook }: DestinationC
           </button>
         </div>
       </div>
-    </motion.article>);
+    </m.article>);
 
 }

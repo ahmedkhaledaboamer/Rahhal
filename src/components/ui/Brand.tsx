@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
 
@@ -22,7 +21,7 @@ export function Brand({ onDark = false, size = 'md', href = '#home', onClick }: 
       className="inline-flex shrink-0 items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold">
       
       <span className={onDark ? 'rounded-2xl bg-white p-1.5 shadow-soft' : ''}>
-        <img src={images.logo} alt={t.brand.logoAlt} className={`${logoSize[size]} w-auto object-contain`} />
+        <img src={images.logo} alt={t.brand.logoAlt} width={309} height={320} decoding="async" className={`${logoSize[size]} w-auto object-contain`} />
       </span>
       {lang === 'en' &&
       <span className="leading-tight">

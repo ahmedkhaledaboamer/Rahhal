@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { CheckIcon } from 'lucide-react';
 import { PlaceholderText } from './PlaceholderText';
 import { fadeUp, stagger, viewportOnce } from '../../utils/motion';
@@ -8,7 +7,7 @@ type CheckListProps = {items: string[];tone?: 'light' | 'dark';columns?: 1 | 2;}
 
 export function CheckList({ items, tone = 'light', columns = 1 }: CheckListProps) {
   return (
-    <motion.ul
+    <m.ul
       variants={stagger(0.04)}
       initial="hidden"
       whileInView="show"
@@ -16,7 +15,7 @@ export function CheckList({ items, tone = 'light', columns = 1 }: CheckListProps
       className={`grid gap-3 ${columns === 2 ? 'md:grid-cols-2' : ''}`}>
       
       {items.map((item) =>
-      <motion.li key={item} variants={fadeUp} className="flex items-start gap-3">
+      <m.li key={item} variants={fadeUp} className="flex items-start gap-3">
           <span
           className={`mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
           tone === 'dark' ? 'bg-gold text-ink' : 'bg-primary-light text-primary-dark'}`
@@ -27,8 +26,8 @@ export function CheckList({ items, tone = 'light', columns = 1 }: CheckListProps
           <span className={tone === 'dark' ? 'text-white/90' : 'text-ink/80'}>
             <PlaceholderText text={item} />
           </span>
-        </motion.li>
+        </m.li>
       )}
-    </motion.ul>);
+    </m.ul>);
 
 }

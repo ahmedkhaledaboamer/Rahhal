@@ -1,5 +1,4 @@
-import React from 'react';
-import { MotionConfig } from 'framer-motion';
+import { LazyMotion, MotionConfig, domAnimation } from 'framer-motion';
 import { BookingProvider } from './contexts/BookingContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { Home } from './pages/Home';
@@ -8,9 +7,12 @@ export function App() {
   return (
     <LanguageProvider>
       <BookingProvider>
-        <MotionConfig reducedMotion="user">
-          <Home />
-        </MotionConfig>
+        {/* `m` components + domAnimation only: no layout/drag engine, much smaller bundle. */}
+        <LazyMotion features={domAnimation} strict>
+          <MotionConfig reducedMotion="user">
+            <Home />
+          </MotionConfig>
+        </LazyMotion>
       </BookingProvider>
     </LanguageProvider>);
 

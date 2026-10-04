@@ -1,5 +1,4 @@
 /* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
 @import 'tailwindcss/base';
@@ -50,7 +49,7 @@ section[id] { scroll-margin-top: 84px; }
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
-/* Gold shimmer sweep on CTAs */
+/* Gold shimmer sweep on CTAs — one pass on hover/focus (an infinite loop on every gold button cost a compositor update each frame). */
 .btn-shimmer { overflow: hidden; isolation: isolate; }
 .btn-shimmer::after {
   content: '';
@@ -59,19 +58,36 @@ section[id] { scroll-margin-top: 84px; }
   z-index: -1;
   background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
   transform: translateX(-130%);
-  animation: shimmer 4.5s linear infinite;
   pointer-events: none;
 }
-[dir='rtl'] .btn-shimmer::after { animation-name: shimmer-rtl; }
-@keyframes shimmer { 0% { transform: translateX(-130%); } 22%, 100% { transform: translateX(130%); } }
-@keyframes shimmer-rtl { 0% { transform: translateX(130%); } 22%, 100% { transform: translateX(-130%); } }
+.btn-shimmer:hover::after,
+.btn-shimmer:focus-visible::after { animation: shimmer 0.9s linear 1; }
+[dir='rtl'] .btn-shimmer::after { transform: translateX(130%); }
+[dir='rtl'] .btn-shimmer:hover::after,
+[dir='rtl'] .btn-shimmer:focus-visible::after { animation-name: shimmer-rtl; }
+@keyframes shimmer { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
+@keyframes shimmer-rtl { from { transform: translateX(130%); } to { transform: translateX(-130%); } }
+
+/* Infinite animations inside [data-offscreen] stop while scrolled out of view (see usePauseOffscreen). */
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after { animation-play-state: paused !important; }
 @keyframes pulse-ring {
   0% { transform: scale(1); opacity: 0.55; }
   100% { transform: scale(1.75); opacity: 0; }
 }
 .pulse-ring { animation: pulse-ring 2.2s cubic-bezier(0.23, 1, 0.32, 1) infinite; }
-@keyframes img-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-.img-skeleton { animation: img-pulse 1.6s ease-in-out infinite; }
+/* Hero ambient decor — transform-only keyframes so the compositor runs them. --sign flips x for RTL. */
+:root { --sign: 1; }
+[dir='rtl'] { --sign: -1; }
+@keyframes hero-plane { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(calc(40px * var(--sign)), -18px, 0); } }
+@keyframes hero-cloud-a { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(calc(-30px * var(--sign)), 0, 0); } }
+@keyframes hero-cloud-b { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(calc(24px * var(--sign)), 0, 0); } }
+@keyframes hero-moon { 0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); } 50% { transform: translate3d(0, 8px, 0) rotate(8deg); } }
+.hero-float-plane { animation: hero-plane 14s ease-in-out infinite; will-change: transform; }
+.hero-float-cloud-a { animation: hero-cloud-a 18s ease-in-out infinite; will-change: transform; }
+.hero-float-cloud-b { animation: hero-cloud-b 22s ease-in-out infinite; will-change: transform; }
+.hero-float-moon { animation: hero-moon 10s ease-in-out infinite; will-change: transform; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 @media (prefers-reduced-motion: reduce) {
@@ -97,3 +113,12 @@ section[id] { scroll-margin-top: 84px; }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
 }
+
+/* Hero slide zoom + slide-timer bar: CSS transform animations (compositor-only). */
+@keyframes hero-kenburns { from { transform: scale(1); } to { transform: scale(1.12); } }
+@keyframes hero-dot { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.hero-kenburns { animation: hero-kenburns 8s linear forwards; }
+.hero-dot-progress { animation: hero-dot 7s linear forwards; }
+
+/* Skip layout/paint (incl. Arabic text shaping) for sections that are off screen; the size is remembered once rendered. */
+#main > section:not(#home) { content-visibility: auto; contain-intrinsic-size: auto 900px; }

@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { useRef } from 'react';
+import { m } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { Step } from '../../data/steps';
+import { useScrollFrame } from '../../hooks/useScrollFrame';
 import { PlaceholderText } from './PlaceholderText';
 import { fadeUp, stagger, viewportOnce } from '../../utils/motion';
 
@@ -11,13 +12,23 @@ type StepFlowProps = {steps: Step[];tone?: 'light' | 'dark';};
 export function StepFlow({ steps, tone = 'light' }: StepFlowProps) {
   const { pick, isRTL } = useLanguage();
   const ref = useRef<HTMLOListElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 85%', 'end 55%'] });
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
+  const barX = useRef<HTMLDivElement>(null);
+  const barY = useRef<HTMLDivElement>(null);
+
+  // 0 when the list's top reaches 85% of the viewport, 1 when its bottom reaches 55%.
+  useScrollFrame(() => {
+    if (!ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const p = Math.min(1, Math.max(0, (0.85 * vh - r.top) / (r.height + 0.3 * vh)));
+    if (barX.current) barX.current.style.transform = `scaleX(${p})`;
+    if (barY.current) barY.current.style.transform = `scaleY(${p})`;
+  }, ref);
   const dark = tone === 'dark';
   const cols = steps.length === 5 ? 'lg:grid-cols-5' : 'lg:grid-cols-4';
 
   return (
-    <motion.ol
+    <m.ol
       ref={ref}
       variants={stagger(0.06)}
       initial="hidden"
@@ -28,21 +39,22 @@ export function StepFlow({ steps, tone = 'light' }: StepFlowProps) {
       {/* Horizontal track (desktop) */}
       <div aria-hidden="true" className="absolute inset-x-[10%] top-8 hidden h-0.5 lg:block">
         <div className={`absolute inset-0 rounded-full ${dark ? 'bg-white/15' : 'bg-primary/15'}`} />
-        <motion.div
-          className="absolute inset-0 rounded-full bg-gold"
-          style={{ scaleX: progress, transformOrigin: isRTL ? 'right' : 'left' }} />
+        <div
+          ref={barX}
+          className="absolute inset-0 rounded-full bg-gold transition-transform duration-150 ease-out"
+          style={{ transform: 'scaleX(0)', transformOrigin: isRTL ? 'right' : 'left' }} />
         
       </div>
       {/* Vertical track (mobile) */}
       <div aria-hidden="true" className="absolute bottom-8 start-8 top-8 w-0.5 lg:hidden">
         <div className={`absolute inset-0 rounded-full ${dark ? 'bg-white/15' : 'bg-primary/15'}`} />
-        <motion.div className="absolute inset-0 origin-top rounded-full bg-gold" style={{ scaleY: progress }} />
+        <div ref={barY} className="absolute inset-0 origin-top rounded-full bg-gold transition-transform duration-150 ease-out" style={{ transform: 'scaleY(0)' }} />
       </div>
 
       {steps.map((step, i) => {
         const Icon = step.icon;
         return (
-          <motion.li key={step.id} variants={fadeUp} className="relative flex gap-5 lg:flex-col lg:items-center lg:text-center">
+          <m.li key={step.id} variants={fadeUp} className="relative flex gap-5 lg:flex-col lg:items-center lg:text-center">
             <div className="relative z-10 shrink-0">
               <div
                 className={`flex h-16 w-16 items-center justify-center rounded-2xl ring-4 ${
@@ -61,9 +73,9 @@ export function StepFlow({ steps, tone = 'light' }: StepFlowProps) {
                 <PlaceholderText text={pick(step.text)} />
               </p>
             </div>
-          </motion.li>);
+          </m.li>);
 
       })}
-    </motion.ol>);
+    </m.ol>);
 
 }

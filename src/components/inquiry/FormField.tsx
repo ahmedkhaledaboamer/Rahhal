@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { CircleAlertIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -29,7 +29,7 @@ export function FormField({ id, label, required, error, className = '', children
       {children}
       <AnimatePresence initial={false}>
         {error &&
-        <motion.p
+        <m.p
           id={`${id}-error`}
           role="alert"
           initial={{ opacity: 0, y: -4 }}
@@ -40,7 +40,7 @@ export function FormField({ id, label, required, error, className = '', children
           
             <CircleAlertIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
-          </motion.p>
+          </m.p>
         }
       </AnimatePresence>
     </div>);

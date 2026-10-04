@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
@@ -24,11 +23,11 @@ export function GulfPanel() {
         <div>
           <p className="text-lg text-ink/75">{g.intro}</p>
           <h3 className="mt-8 text-xl font-extrabold text-ink">{g.visaTypesTitle}</h3>
-          <motion.ul variants={stagger(0.05)} initial="hidden" whileInView="show" viewport={viewportOnce} className="mt-5 space-y-3">
+          <m.ul variants={stagger(0.05)} initial="hidden" whileInView="show" viewport={viewportOnce} className="mt-5 space-y-3">
             {gulfVisaTypes.map((v) => {
               const Icon = v.icon;
               return (
-                <motion.li key={v.id} variants={fadeUp} className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-ink/5">
+                <m.li key={v.id} variants={fadeUp} className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-ink/5">
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary-dark">
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </span>
@@ -36,15 +35,15 @@ export function GulfPanel() {
                     <p className="font-bold text-ink">{pick(v.title)}</p>
                     <p className="text-sm text-ink/65">{pick(v.text)}</p>
                   </div>
-                </motion.li>);
+                </m.li>);
 
             })}
-          </motion.ul>
+          </m.ul>
         </div>
 
         <div>
           <h3 className="text-xl font-extrabold text-ink">{g.countriesTitle}</h3>
-          <motion.ul
+          <m.ul
             variants={stagger(0.05)}
             initial="hidden"
             whileInView="show"
@@ -52,7 +51,7 @@ export function GulfPanel() {
             className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
             
             {gulfCountries.map((c, i) =>
-            <motion.li
+            <m.li
               key={c.id}
               variants={fadeUp}
               className={`relative overflow-hidden rounded-2xl shadow-soft ${i === 0 ? 'col-span-2 sm:row-span-2' : ''}`}>
@@ -75,9 +74,9 @@ export function GulfPanel() {
                   </p>
                   {c.detail && <p className="mt-1 text-xs text-white/80">{pick(c.detail)}</p>}
                 </div>
-              </motion.li>
+              </m.li>
             )}
-          </motion.ul>
+          </m.ul>
         </div>
       </div>
 
@@ -90,7 +89,7 @@ export function GulfPanel() {
 
       <div>
         <h3 className="text-2xl font-extrabold text-ink">{g.programsTitle}</h3>
-        <motion.ul
+        <m.ul
           variants={stagger(0.06)}
           initial="hidden"
           whileInView="show"
@@ -100,7 +99,7 @@ export function GulfPanel() {
           {gulfPrograms.map((p) =>
           <ProgramCard key={p.id} program={p} />
           )}
-        </motion.ul>
+        </m.ul>
       </div>
 
       <div className="space-y-6">

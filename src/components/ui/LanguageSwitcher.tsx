@@ -1,5 +1,4 @@
-import React, { useId, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { Lang } from '../../types/i18n';
 
@@ -16,7 +15,6 @@ const options: {lang: Lang;code: string;label: string;}[] = [
 
 export function LanguageSwitcher({ variant = 'compact', tone = 'light' }: LanguageSwitcherProps) {
   const { lang, setLang, t } = useLanguage();
-  const layoutId = useId();
   const [announce, setAnnounce] = useState('');
 
   const choose = (next: Lang) => {
@@ -42,22 +40,19 @@ export function LanguageSwitcher({ variant = 'compact', tone = 'light' }: Langua
             type="button"
             lang={o.lang}
             aria-pressed={active}
-            aria-label={o.label}
             onClick={() => choose(o.lang)}
             className={`relative z-10 rounded-full px-3 py-1.5 text-xs font-bold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
             active ? 'text-ink' : tone === 'dark' ? 'text-white/75 hover:text-white' : 'text-primary-dark/75 hover:text-primary-dark'} ${
             variant === 'full' ? 'px-4 text-sm' : ''}`}>
             
-            {active &&
-            <motion.span
-              layoutId={layoutId}
-              className="absolute inset-0 -z-10 rounded-full bg-gold shadow-sm"
-              transition={{ type: 'spring', stiffness: 500, damping: 38 }} />
-
-            }
-            <span style={{ fontFamily: o.lang === 'ar' ? 'Cairo, sans-serif' : 'Inter, sans-serif' }}>
+            <span
+              aria-hidden="true"
+              className={`absolute inset-0 -z-10 rounded-full bg-gold shadow-sm transition-[opacity,transform] duration-200 ease-brand ${
+              active ? 'scale-100 opacity-100' : 'scale-75 opacity-0'}`} />
+            <span aria-hidden={variant !== 'full'} style={{ fontFamily: o.lang === 'ar' ? 'Cairo, sans-serif' : 'Inter, sans-serif' }}>
               {variant === 'full' ? o.label : o.code}
             </span>
+            {variant !== 'full' && <span className="sr-only">{o.label}</span>}
           </button>);
 
       })}

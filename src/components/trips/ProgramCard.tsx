@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
 import type { Program } from '../../data/international';
@@ -11,7 +10,7 @@ import { SmartImage } from '../ui/SmartImage';
 export function ProgramCard({ program }: {program: Program;}) {
   const { t, pick, lang } = useLanguage();
   return (
-    <motion.li variants={fadeUp}>
+    <m.li variants={fadeUp}>
       <a
         href={inquiryWhatsappLink(lang, pick(program.title))}
         target="_blank"
@@ -28,6 +27,6 @@ export function ProgramCard({ program }: {program: Program;}) {
           </span>
         </span>
       </a>
-    </motion.li>);
+    </m.li>);
 
 }

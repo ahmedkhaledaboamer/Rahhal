@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
 import { whyFeatures } from '../../data/features';
@@ -22,7 +21,7 @@ export function WhyRahhal() {
             className="mt-10 hidden rounded-3xl shadow-lift lg:block" />
           
         </div>
-        <motion.ul
+        <m.ul
           variants={stagger(0.06)}
           initial="hidden"
           whileInView="show"
@@ -32,16 +31,16 @@ export function WhyRahhal() {
           {whyFeatures.map((f) => {
             const Icon = f.icon;
             return (
-              <motion.li key={f.id} variants={fadeUp} className="group border-t border-ink/10 pt-6">
+              <m.li key={f.id} variants={fadeUp} className="group border-t border-ink/10 pt-6">
                 <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-primary-dark shadow-soft ring-1 ring-ink/5 transition-[background-color,color,transform] duration-200 ease-brand group-hover:-translate-y-0.5 group-hover:bg-primary-dark group-hover:text-gold-light">
                   <Icon className="h-6 w-6" aria-hidden="true" />
                 </span>
                 <h3 className="mt-5 text-xl font-extrabold text-ink">{pick(f.title)}</h3>
                 <p className="mt-2 text-ink/70">{pick(f.text)}</p>
-              </motion.li>);
+              </m.li>);
 
           })}
-        </motion.ul>
+        </m.ul>
       </div>
     </section>);
 

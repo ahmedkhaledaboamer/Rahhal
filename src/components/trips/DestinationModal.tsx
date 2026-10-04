@@ -96,14 +96,14 @@ export function DestinationModal({ destination, onClose, onBook }: DestinationMo
 
 function InfoRow({ icon, label, value }: {icon: React.ReactNode;label: string;value: string;}) {
   return (
-    <div className="flex gap-3 rounded-2xl bg-cloud p-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-primary-dark shadow-sm">{icon}</span>
-      <div>
-        <dt className="text-xs font-bold text-primary-dark">{label}</dt>
-        <dd className="mt-0.5 text-[15px] text-ink/80">
-          <PlaceholderText text={value} />
-        </dd>
-      </div>
+    <div className="relative min-h-[4.5rem] rounded-2xl bg-cloud p-4 ps-[4.25rem]">
+      <dt className="text-xs font-bold text-primary-dark">
+        <span className="absolute start-4 top-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-primary-dark shadow-sm" aria-hidden="true">{icon}</span>
+        {label}
+      </dt>
+      <dd className="mt-0.5 text-[15px] text-ink/80">
+        <PlaceholderText text={value} />
+      </dd>
     </div>);
 
 }

@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ArrowRightIcon, CompassIcon, EyeIcon, FileTextIcon, GemIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { images } from '../../data/images';
@@ -38,7 +37,7 @@ export function About() {
                 className="col-span-2 row-span-3 rounded-3xl shadow-soft" />
               
             </div>
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={viewportOnce}
@@ -54,7 +53,7 @@ export function About() {
                 </p>
                 <p className="text-xs text-ink/65">{t.about.experienceLabel}</p>
               </div>
-            </motion.div>
+            </m.div>
           </Reveal>
 
           {/* Text */}
@@ -74,24 +73,24 @@ export function About() {
         </div>
 
         {/* Vision / Mission / Values */}
-        <motion.div
+        <m.div
           variants={stagger(0.07)}
           initial="hidden"
           whileInView="show"
           viewport={viewportOnce}
           className="mt-24 grid gap-6 lg:grid-cols-[1fr_1fr_1.6fr]">
           
-          <motion.article variants={fadeUp} className="rounded-3xl bg-primary-dark p-8 text-white shadow-lift">
+          <m.article variants={fadeUp} className="rounded-3xl bg-primary-dark p-8 text-white shadow-lift">
             <EyeIcon className="h-8 w-8 text-gold-light" aria-hidden="true" />
             <h3 className="mt-5 text-xl font-extrabold">{t.about.visionTitle}</h3>
             <p className="mt-3 text-white/80">{t.about.vision}</p>
-          </motion.article>
-          <motion.article variants={fadeUp} className="rounded-3xl bg-white p-8 shadow-soft ring-1 ring-ink/5">
+          </m.article>
+          <m.article variants={fadeUp} className="rounded-3xl bg-white p-8 shadow-soft ring-1 ring-ink/5">
             <CompassIcon className="h-8 w-8 text-primary" aria-hidden="true" />
             <h3 className="mt-5 text-xl font-extrabold text-ink">{t.about.missionTitle}</h3>
             <p className="mt-3 text-ink/70">{t.about.mission}</p>
-          </motion.article>
-          <motion.article variants={fadeUp} className="rounded-3xl bg-white p-8 shadow-soft ring-1 ring-ink/5">
+          </m.article>
+          <m.article variants={fadeUp} className="rounded-3xl bg-white p-8 shadow-soft ring-1 ring-ink/5">
             <h3 className="text-xl font-extrabold text-ink">{t.about.valuesTitle}</h3>
             <ul className="mt-5 grid gap-x-6 gap-y-4 sm:grid-cols-2">
               {companyValues.map((v) => {
@@ -109,8 +108,8 @@ export function About() {
 
               })}
             </ul>
-          </motion.article>
-        </motion.div>
+          </m.article>
+        </m.div>
 
         <Reveal className="mt-12 flex justify-center">
           <Button

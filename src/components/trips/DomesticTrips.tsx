@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { m } from 'framer-motion';
 import { CircleXIcon, MapPinIcon } from 'lucide-react';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -24,7 +24,7 @@ export function DomesticTrips() {
     <div>
       <p className="mx-auto max-w-3xl text-center text-lg text-ink/70">{t.trips.domestic.intro}</p>
 
-      <motion.div
+      <m.div
         variants={stagger(0.05)}
         initial="hidden"
         whileInView="show"
@@ -34,7 +34,7 @@ export function DomesticTrips() {
         {destinations.map((d) =>
         <DestinationCard key={d.id} destination={d} onOpen={() => setSelected(d)} onBook={() => book(d)} />
         )}
-      </motion.div>
+      </m.div>
 
       <div className="mt-16 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
         <Reveal className="rounded-3xl bg-white p-8 shadow-soft ring-1 ring-ink/5 md:p-10">

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { isPlaceholder, splitPlaceholders } from '../../utils/text';
 

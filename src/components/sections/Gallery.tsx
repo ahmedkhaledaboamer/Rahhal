@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { m } from 'framer-motion';
 import { ExpandIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { galleryItems } from '../../data/gallery';
 import { images } from '../../data/images';
-import { fadeUp, stagger, viewportOnce } from '../../utils/motion';
+import { fadeUp, stagger } from '../../utils/motion';
 import { Lightbox } from '../ui/Lightbox';
 import { SectionTitle } from '../ui/SectionTitle';
 import { SmartImage } from '../ui/SmartImage';
@@ -20,7 +20,7 @@ export function Gallery() {
     <section aria-labelledby="gallery-title" className="bg-white py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionTitle id="gallery-title" title={t.gallery.title} />
-        <motion.ul
+        <m.ul
           variants={stagger(0.04)}
           initial="hidden"
           whileInView="show"
@@ -28,7 +28,7 @@ export function Gallery() {
           className="mt-14 columns-2 gap-3 md:columns-3 md:gap-4 lg:columns-4">
           
           {galleryItems.map((g, i) =>
-          <motion.li key={g.key} variants={fadeUp} className="mb-3 break-inside-avoid md:mb-4">
+          <m.li key={g.key} variants={fadeUp} className="mb-3 break-inside-avoid md:mb-4">
               <button
               type="button"
               onClick={() => setIndex(i)}
@@ -44,9 +44,9 @@ export function Gallery() {
                   <ExpandIcon className="h-5 w-5 shrink-0 text-gold-light" />
                 </span>
               </button>
-            </motion.li>
+            </m.li>
           )}
-        </motion.ul>
+        </m.ul>
       </div>
       <Lightbox images={lightboxImages} index={index} onClose={() => setIndex(null)} onIndexChange={setIndex} />
     </section>);

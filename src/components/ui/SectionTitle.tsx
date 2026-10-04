@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { EASE_OUT, viewportOnce } from '../../utils/motion';
 
@@ -16,7 +16,7 @@ export function SectionTitle({ title, subtitle, align = 'center', tone = 'light'
   const centered = align === 'center';
   return (
     <div className={centered ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl text-start'}>
-      <motion.h2
+      <m.h2
         id={id}
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -27,8 +27,8 @@ export function SectionTitle({ title, subtitle, align = 'center', tone = 'light'
         }>
         
         {title}
-      </motion.h2>
-      <motion.span
+      </m.h2>
+      <m.span
         aria-hidden="true"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
@@ -38,7 +38,7 @@ export function SectionTitle({ title, subtitle, align = 'center', tone = 'light'
         className={`mt-4 block h-1 w-20 rounded-full bg-gold ${centered ? 'mx-auto' : ''}`} />
       
       {subtitle &&
-      <motion.p
+      <m.p
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={viewportOnce}
@@ -46,7 +46,7 @@ export function SectionTitle({ title, subtitle, align = 'center', tone = 'light'
         className={`mt-5 text-base md:text-lg ${tone === 'dark' ? 'text-white/80' : 'text-ink/70'}`}>
         
           {subtitle}
-        </motion.p>
+        </m.p>
       }
     </div>);
 

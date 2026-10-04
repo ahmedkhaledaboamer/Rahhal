@@ -1,5 +1,4 @@
-import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import type { IntlTab } from '../../types/booking';
@@ -29,7 +28,7 @@ export function InternationalTrips() {
         
       </div>
       <AnimatePresence mode="wait" initial={false}>
-        <motion.div
+        <m.div
           key={intlTab}
           role="tabpanel"
           id={`intl-panel-${intlTab}`}
@@ -41,7 +40,7 @@ export function InternationalTrips() {
           className="mt-12">
           
           {intlTab === 'gulf' ? <GulfPanel /> : <EuropePanel />}
-        </motion.div>
+        </m.div>
       </AnimatePresence>
     </div>);
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowRightIcon, FileCheckIcon } from 'lucide-react';
 import { useBooking } from '../../contexts/BookingContext';
 import { useLanguage } from '../../contexts/LanguageContext';

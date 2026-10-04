@@ -1,60 +1,64 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { Suspense, lazy, startTransition, useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { FloatingButtons } from '../components/layout/FloatingButtons';
 import { ScrollToTop } from '../components/layout/ScrollToTop';
-import { Footer } from '../components/layout/Footer';
 import { Header } from '../components/layout/Header';
-import { IntroLoader } from '../components/layout/IntroLoader';
-import { About } from '../components/sections/About';
-import { Contact } from '../components/sections/Contact';
-import { CtaBanner } from '../components/sections/CtaBanner';
-import { ExtraServices } from '../components/sections/ExtraServices';
-import { Gallery } from '../components/sections/Gallery';
 import { Hero } from '../components/sections/hero/Hero';
-import { HowToBook } from '../components/sections/HowToBook';
-import { Inquiry } from '../components/sections/Inquiry';
-import { MapSection } from '../components/sections/MapSection';
-import { Services } from '../components/sections/Services';
-import { Testimonials } from '../components/sections/Testimonials';
-import { Visas } from '../components/sections/Visas';
-import { WhyRahhal } from '../components/sections/WhyRahhal';
-import { Trips } from '../components/trips/Trips';
+import { settleOnSection } from '../utils/scroll';
+
+// Start downloading the below-the-fold chunk right away, in parallel with the first render.
+const loadBelowFold = () => import('./BelowFold');
+loadBelowFold();
+const BelowFold = lazy(loadBelowFold);
+const Footer = lazy(() => loadBelowFold().then((mod) => ({ default: mod.Footer })));
 
 export function Home() {
-  const { t, switching } = useLanguage();
+  const { t } = useLanguage();
+  // Header + hero paint first; the rest renders in a transition, which React time-slices
+  // so the main thread never blocks long enough to make the page feel stuck.
+  const [showRest, setShowRest] = useState(false);
+  useEffect(() => {
+    const id = window.requestAnimationFrame(() => startTransition(() => setShowRest(true)));
+    return () => window.cancelAnimationFrame(id);
+  }, []);
+
+  // Native in-page links (#trips, #inquiry…) keep their default smooth jump; just re-align once it ends.
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const link = (e.target as Element | null)?.closest?.('a[href^="#"]');
+      const id = link?.getAttribute('href')?.slice(1);
+      const target = id ? document.getElementById(id) : null;
+      if (target && !e.defaultPrevented) settleOnSection(target);
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
+
   return (
     <div className="min-h-screen w-full overflow-x-clip bg-cloud font-sans text-ink">
       <a
         href="#main"
         className="sr-only z-[110] rounded-full bg-gold px-5 py-3 font-bold text-ink focus:not-sr-only focus:fixed focus:start-4 focus:top-4">
-        
+
         {t.a11y.skip}
       </a>
-      <IntroLoader />
-      <motion.div
-        animate={{ opacity: switching ? 0 : 1 }}
-        transition={{ duration: 0.14, ease: [0.23, 1, 0.32, 1] }}>
-        
+      <div>
+
         <Header />
         <main id="main">
           <Hero />
-          <About />
-          <Services />
-          <Trips />
-          <Visas />
-          <WhyRahhal />
-          <ExtraServices />
-          <HowToBook />
-          <Testimonials />
-          <Gallery />
-          <CtaBanner />
-          <MapSection />
-          <Inquiry />
-          <Contact />
+          {showRest &&
+          <Suspense fallback={null}>
+              <BelowFold />
+            </Suspense>
+          }
         </main>
-        <Footer />
-      </motion.div>
+        {showRest &&
+        <Suspense fallback={null}>
+            <Footer />
+          </Suspense>
+        }
+      </div>
       <FloatingButtons />
       <ScrollToTop />
     </div>);

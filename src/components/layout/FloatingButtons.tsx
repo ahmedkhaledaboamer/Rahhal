@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { PhoneIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { contact } from '../../data/contact';
@@ -11,7 +10,7 @@ import { WhatsAppIcon } from '../icons/BrandIcons';
 export function FloatingButtons() {
   const { t, lang } = useLanguage();
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: EASE_OUT, delay: 1.2 }}
@@ -34,6 +33,6 @@ export function FloatingButtons() {
         <span aria-hidden="true" className="pulse-ring absolute inset-0 rounded-full bg-[#25D366]" />
         <WhatsAppIcon className="relative h-7 w-7" />
       </a>
-    </motion.div>);
+    </m.div>);
 
 }

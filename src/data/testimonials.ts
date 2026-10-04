@@ -16,7 +16,7 @@ export type Testimonial = {
 };
 
 // Photos are in place; fill in each customer's real name, service, rating and review.
-const photo = (n: number) => `/testimonials/customer-${n}.jpg`;
+const photo = (n: number) => `/testimonials/customer-${n}.webp`;
 
 export const testimonials: Testimonial[] = Array.from({ length: 10 }, (_, i) => ({
   id: `customer-${i + 1}`,

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { XIcon } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useBodyLock } from '../../hooks/useBodyLock';
@@ -42,7 +42,7 @@ export function Modal({ open, onClose, labelledBy, children, size = 'xl' }: Moda
     <AnimatePresence>
       {open &&
       <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6" dir={dir}>
-          <motion.div
+          <m.div
           className="absolute inset-0 bg-ink/60 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -50,7 +50,7 @@ export function Modal({ open, onClose, labelledBy, children, size = 'xl' }: Moda
           transition={{ duration: 0.2 }}
           onClick={onClose} />
         
-          <motion.div
+          <m.div
           ref={panelRef}
           role="dialog"
           aria-modal="true"
@@ -71,7 +71,7 @@ export function Modal({ open, onClose, labelledBy, children, size = 'xl' }: Moda
               <XIcon className="h-5 w-5" aria-hidden="true" />
             </button>
             {children}
-          </motion.div>
+          </m.div>
         </div>
       }
     </AnimatePresence>,
